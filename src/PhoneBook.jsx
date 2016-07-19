@@ -18,13 +18,39 @@ module.exports = React.createClass({
         {firstname: 'Ada', lastname: 'Lovelace', phone: '045-43746776'},
         {firstname: 'Jane', lastname: 'Doe', phone: '045-34646347'}
       ],
-      nameFilter: ''
+      nameFilter: '',
+      forms: {
+        newContact: {
+          firstname: '',
+          lastname: '',
+          phone: ''
+        }
+      }
     };
   },
   componentDidMount: function() {
     eb.on(this, 'UPDATE_FILTER', function(newFilterValue) {
       console.log('UPDATE_FILTER received, updating state to nameFilter: ' + newFilterValue);
       this.setState({nameFilter: newFilterValue});
+    });
+    eb.on(this, 'UPDATE_FORM_FIELD', function(fieldKey, fieldValue) {
+      console.log("UPDATE_FORM_FIELD received, updating " + fieldKey + ": " + fieldValue);
+      var newState = this.state;
+      newState.forms.newContact[fieldKey] = fieldValue;
+      this.setState(newState);
+    });
+    eb.on(this, 'COMMIT_FORM', function() {
+      // Look, no arguments! App db already contains everything we need.
+      // Remember the single point of truth principle!
+      this.setState({
+        contacts: this.state.contacts.concat([this.state.forms.newContact]),
+        forms: {
+          newContact: {
+            firstname: '',
+            lastname: '',
+            phone: ''
+          }
+        }});
     });
   },
   getContacts: function() {
@@ -53,7 +79,7 @@ module.exports = React.createClass({
               <div className="all-50">
                 <div className="ink-form">
                   <h4>Add new contact</h4>
-                  <NewContactForm />
+                  <NewContactForm data={this.state.forms.newContact}/>
                 </div>
               </div>
             </div>
