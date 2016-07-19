@@ -36,6 +36,9 @@ module.exports = React.createClass({
         contact.firstname.indexOf(this.state.nameFilter) > -1;
     }.bind(this));
   },
+  getContactCount: function() {
+    return this.state.contacts.length;
+  },
   render: function() {
     return (
       <div>
@@ -45,7 +48,7 @@ module.exports = React.createClass({
               <div className="all-50">
                 <FilterInput value={this.state.nameFilter}/>
                 <ContactListing contacts={this.getContacts()}/>
-                <ContactCounts contactCount="1000" />
+                <ContactCounts contactCount={this.getContactCount()} />
               </div>
               <div className="all-50">
                 <div className="ink-form">
