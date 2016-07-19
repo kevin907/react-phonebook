@@ -52,6 +52,13 @@ module.exports = React.createClass({
           }
         }});
     });
+    eb.on(this, 'DELETE_CONTACT', function(contact) {
+      console.log('DELETE_CONTACT received');
+      var newContacts = this.state.contacts.filter(function(c) {
+        return c.firstname !== contact.firstname || c.lastname !== contact.lastname ;
+      });
+      this.setState({contacts: newContacts});
+    });
   },
   getContacts: function() {
     if(this.state.nameFilter === '') {
